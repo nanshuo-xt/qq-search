@@ -1,7 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
+
 import { debounce } from "./utils";
 import axios from "axios";
-import "./App.css";
+import "./App.less";
+
+const PENDING = "PENDING";
+const EMPTY = "EMPTY";
+const ERROR = "ERROR";
+const SUCCESS = "SUCCESS";
 
 function App() {
   const [msg, setMsg] = useState({
@@ -9,17 +15,11 @@ function App() {
     name: "",
     qq: "",
   });
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(EMPTY);
 
-  const debounceSearch = useCallback(
-    debounce((e) => {
-      console.log("e", e.target.value);
-      getInfo(e.target.value);
-    }),
-    []
-  );
-
-  function getInfo(id = "774740085") {
+  // get user info
+  function getInfo(id) {
+    setStatus(PENDING);
     axios
       .get("https://api.uomg.com/api/qq.info", {
         params: {
@@ -27,33 +27,64 @@ function App() {
         },
       })
       .then((res) => {
-        console.log("res", res);
-        const { qlogo, name, qq } = res.data;
-        setMsg({
-          qlogo,
-          name,
-          qq,
-        });
+        if (res && res.data && res.data.code === 1) {
+          setStatus(SUCCESS);
+          const { qlogo, name, qq } = res.data;
+          setMsg({
+            qlogo,
+            name,
+            qq,
+          });
+        } else {
+          setStatus(ERROR);
+        }
       })
       .catch((err) => {
-        console.log("err", err);
+        setStatus(ERROR);
       });
   }
+
+  // useCallback + debounce
+  const debounceGetInfo = useCallback(debounce(getInfo), []);
+
+  // search event
+  const onSearch = (e) => {
+    setStatus(PENDING);
+    debounceGetInfo(e.target.value);
+  };
+
+  // User comp
+  function User({ qlogo, name, qq }) {
+    return (
+      <div className="user">
+        <img src={qlogo} alt="" />
+        <div className="info">
+          <div>{name}</div>
+          <div>{qq}</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty comp
+  function Empty({ desc }) {
+    return <div className="empty">{desc}</div>;
+  }
+
+  const State = {
+    PENDING: <Empty desc={"请求中..."} />,
+    EMPTY: <Empty desc={"暂无数据"} />,
+    ERROR: <Empty desc={"出错了!"} />,
+    SUCCESS: <User {...msg} />,
+  };
 
   return (
     <div className="app">
       <h2>QQ号查询</h2>
       <div className="search">
-        QQ：
-        <input onChange={debounceSearch} />
+        QQ: <input onChange={onSearch} />
       </div>
-      <div className="user">
-        <img src={msg.qlogo} alt=""/>
-        <div className="info">
-          <div>{msg.name}</div>
-          <div>{msg.qq}</div>
-        </div>
-      </div>
+      {State[status]}
     </div>
   );
 }
