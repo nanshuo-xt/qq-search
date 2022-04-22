@@ -1,0 +1,86 @@
+html {
+  font-size: 60px;
+}
+
+body {
+  background: #E3E3E3;
+}
+
+.card {
+  width: 700px;
+  height: 200px;
+  background-image: url(https://gw.alipayobjects.com/mdn/rms_7527d7/afts/img/A*HD9_S4RyppUAAAAAAAAAAAAAARQnAQ);
+  background-size: 100% auto;
+  background-position: center;
+  margin-bottom: 0.4rem;
+  position: relative;
+  
+  .card-left{
+    .card-left-title {
+      line-height: 36px;
+      display: flex;
+      font-size: 24px;
+      img {
+        height: 36px;
+        width: 36px;
+      }
+      .distance{
+        margin-left: 45%;
+        color: #ccc;
+      }
+    }
+    .card-left-content{
+      display: flex;
+      .camp-img{
+        width: 133px;
+        height: 133px;
+        margin-right: 2%;
+      }
+      .card-content-right{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        font-size: 20px;
+        color: #000;
+        font-weight: bold;
+        .promo-logo{
+          .logo-item{
+            height: 30px;
+            margin-right: 12px;
+          }
+        }
+        .price{
+          font-size: 32px;
+          color: red;
+          .old-price{
+            font-size: 22px;
+            color: #ccc;
+            text-decoration: line-through;
+          }
+        }
+      }
+    }
+  }
+  .card-right{
+    width: 190px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    text-align: center;
+    .discount{
+      font-size: 20px;
+      color: #83530c;
+    }
+    .button {
+      width: 124px;
+      height: 60px;
+      font-size: 36px;
+      color: #fff;
+      font-weight: bold;
+      background: #e83b52;
+      border-radius: 30px;
+      cursor: pointer;
+      margin: 20px auto;
+    }
+  }
+}
